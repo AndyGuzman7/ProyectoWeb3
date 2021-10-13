@@ -91,6 +91,7 @@
     <Content Include="style.css" />
     <Content Include="Images\mallaCurricular.png" />
     <Content Include="styleComent.css" />
+    <Content Include="styleModal.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +108,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="css\" />
   </ItemGroup>
   <PropertyGroup>

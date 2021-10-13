@@ -1,33 +1,136 @@
 ﻿@{
-    Layout = null;
+    var result = "";
+    var resultReadFile = "";
+    Array comentData = null;
+    char[] delimiterChar = { '|' };
+    var pathFile = "";
+
+    if (IsPost)
+    {
+
+        var typeAction = Request["typeAction"];
+        var name = Request["txtName"];
+        var coment = Request["txtComent"];
+
+
+        pathFile = Server.MapPath("~/App_Data/data.txt");
+        if(typeAction == "")
+        {
+
+        }
+        if(typeAction == "PUT")
+        {
+
+        }
+        try
+        {
+            if (!File.Exists(pathFile))
+            {
+                File.CreateText(pathFile);
+            }
+            
+                var lenght = File.ReadAllLines(pathFile).Length+1;
+                var dtaString = lenght+"|"+name + "|" + coment + Environment.NewLine;
+                File.AppendAllText(pathFile, dtaString);
+                result = "Success";
+            
+
+
+
+        }
+        catch (Exception ex)
+        {
+
+            result = ex.Message;
+        }
+
+        if(result == "Success")
+        {
+            if(File.Exists(pathFile))
+            {
+                comentData = File.ReadAllLines(pathFile);
+                if(comentData == null)
+                {
+                    resultReadFile = "No hay comentarios";
+                }
+                resultReadFile = "ok";
+            }
+
+        }
+
+    }
 }
 
-<!DOCTYPE html>
+<!DOCTYPE html >
 
-<html>
+<html  lang="en">
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
     <link rel="stylesheet" href="~/style.css" />
     <link rel="stylesheet" href="~/styleComent.css" />
+    <link rel="stylesheet" href="~/styleModal.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title></title>
+
+    <script>
+        var mostar = document.getElementById('mostrar');
+        var cerrar = document.getElementById('cerrar');
+        var dialogo = document.getElementById('dialogo');
+        var dialogo;
+
+
+        function mostrar() {
+            dialogo = document.getElementById('dialogo');
+            dialogo.showModal();
+            alert("safdsdf");
+
+        }
+
+        function cerrarDialog() {
+
+            dialogo.close();
+        }
+
+        function viewDataComent(name, coment) {
+            document.getElementById("txtNameUpdate").value = name;
+            document.getElementById("txtComentUpdate").value = coment;
+
+        }
+
+    </script>
 </head>
 <body>
 
+
+    
+    <dialog id="dialogo" style="overflow:hidden">
+        <content>
+            <p>¡Hola!</p>
+            <button id="mostrar" onclick="cerrarDialog();">Mostrar diálogo</button>
+        </content>
+    </dialog>
+
+
+    <button id="mostrar" onclick="mostrar();">Mostrar diálogo</button>
+
     <div class="dj-banner">
-        <div class="dj-bg" >
+        <div class="dj-bg">
             <div class="dj-text">
                 <h1><b>Ingenieria de sistemas</b></h1>
                 <p>Materias y malla curricular.</p>
-               
+
             </div>
         </div>
     </div>
 
-    
+
     <div class="container">
         <img class="img-fluid " alt="Responsive image" src="~/Images/mallaCurricular.png">
     </div>
@@ -35,65 +138,97 @@
     <div class="container">
         <div class="row comentarios justify-content-center">
             <div class="col-6">
-                <form action="" class="form_comentarios d-flex justify-content-end flex-wrap ">
-                    <textarea name="" id="" placeholder="Comentario"></textarea>
-                    <button class="btn" type="button">Comentar</button>
+                <form action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
+                    <input type="hidden" name="txtName" value="Andy" />
+                    <textarea name="txtComent" placeholder="Comentario"></textarea>
+
+                    <input class="btn" type="submit" value="Send" name="btnFile" />
                 </form>
 
-                <div class="media">
-                    <img src="https://www.hueconstruction.co.uk/wp-content/uploads/2016/04/Picture-of-person.png" width="64" height="64" alt="" />
-                    <div class="media-body">
-                        <p class="nombre">
-                            Jhon Doe <span>7:51 pm, Hoy</span>
-                        </p>
-                        <p class="comentario">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                        </p>
-                        <div class="botones text-right">
-                            <a href="#">Responder</a>
-                            <a href="#">Editar</a>
-                            <a href="#">Borrar</a>
+                <div>
+                    <h1>Comentarios</h1>
+                    
+                    @if (resultReadFile == "ok")
+                    {
+                        <div>
+                            @foreach (string dataLine in comentData)
+                            {
+                                string[] dataItem = dataLine.Split(delimiterChar);
 
+                                <div class="media">
+                                    <img src="https://cdn-icons.flaticon.com/png/512/1509/premium/1509606.png?token=exp=1634098529~hmac=ca35baf2af25e7452e17dd15c1418d7e" width="64" height="64" alt="" />
+                                    <div class="media-body">
+                                        <p class="nombre">
+                                            @dataItem[1] <span>7:51 pm, Hoy</span>
+                                        </p>
+                                        <p class="comentario">
+                                            @dataItem[2]
+                                        </p>
+                                        <div class="botones text-right">
+                                           
+
+                                            <a data-toggle="modal" data-target="#myModal" onclick="viewDataComent('@dataItem[1]', '@dataItem[2]');">Editar</a>
+                                            <a>Borrar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    </div>
+                    }
                 </div>
-                <div class="media">
-                    <img src="https://thumbs.dreamstime.com/b/retrato-de-clausura-regocijo-una-mujer-asi%C3%A1tica-sorprendida-con-gafas-feliz-por-la-persona-oiga-grandes-noticias-cierre-226511426.jpg" width="64" height="64" alt="" />
-                    <div class="media-body">
-                        <p class="nombre">
-                            Jhon Doe <span>7:51 pm, Hoy</span>
-                        </p>
-                        <p class="comentario">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                        </p>
-                        <div class="botones text-right">
-                            <a href="#">Responder</a>
-                            <a href="#">Editar</a>
-                            <a href="#">Borrar</a>
+
+               
+               
+
+                <button type="button" onclick="abrirDialogo('dialogo1')">Abrir diálogo</button>
+
+
+            </div>
+
+        </div>
+        <div class="container">
+            <h2>Modal Example</h2>
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content modelContainer">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Actualizar comentario</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
 
                         </div>
-                    </div>
-                </div>
-                <div class="media">
-                    <img src="https://www.diethelmtravel.com/wp-content/uploads/2016/04/bill-gates-wealthiest-person-279x300.jpg" width="64" height="64" alt="" />
-                    <div class="media-body">
-                        <p class="nombre">
-                            Jhon Doe <span>7:51 pm, Hoy</span>
-                        </p>
-                        <p class="comentario">
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-                        </p>
-                        <div class="botones text-right">
-                            <a href="#">Responder</a>
-                            <a href="#">Editar</a>
-                            <a href="#">Borrar</a>
+                       
+                        <div class="modal-body">
+                            <div>
+                                <p>Usuario: </p>
 
+                                <p>Fecha publicación: </p>
+                            </div>
+                            
+                            <form action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
+                                <input  type="hidden" name="typeAction" value="PUT" />
+                                <input id="txtNameUpdate" type="hidden" name="txtName" value="Andy" />
+                                <textarea id="txtComentUpdate" name="txtComent" placeholder="Comentario"></textarea>
+
+                                <input class="btn" type="submit" value="Actualizar" name="btnFile" />
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
+
                 </div>
             </div>
 
         </div>
+
+
 
     </div>
 </body>
