@@ -1,65 +1,223 @@
 ﻿@{
-    var result = "";
+
+
+    string rolUser = "1";
+    bool resultPost;
+    bool resultGet = false;
     var resultReadFile = "";
-    Array comentData = null;
+    List<string> listDatComnet = new List<string>();
     char[] delimiterChar = { '|' };
-    var pathFile = "";
+
+    var pathFile = Server.MapPath("~/App_Data/data.txt");
+    var pathFileAux = Server.MapPath("~/App_Data/dataAux.txt");
+    var pathFileMatters = Server.MapPath("~/App_Data/matters.txt");
+
+
+    ViewComments();
 
     if (IsPost)
     {
 
-        var typeAction = Request["typeAction"];
+        string typeAction = Request["typeAction"].ToString();
+
+        var idUser = Request["txtIdUser"];
+        var matter = Request["txtMatter"];
         var name = Request["txtName"];
-        var coment = Request["txtComent"];
+        var comment = Request["txtComment"];
+        resultReadFile = name;
 
-
-        pathFile = Server.MapPath("~/App_Data/data.txt");
-        if(typeAction == "")
+        switch (typeAction)
         {
+            case "GET":
+                listDatComnet = Get();
 
-        }
-        if(typeAction == "PUT")
-        {
-
-        }
-        try
-        {
-            if (!File.Exists(pathFile))
-            {
-                File.CreateText(pathFile);
-            }
-            
-                var lenght = File.ReadAllLines(pathFile).Length+1;
-                var dtaString = lenght+"|"+name + "|" + coment + Environment.NewLine;
-                File.AppendAllText(pathFile, dtaString);
-                result = "Success";
-            
+                break;
+            case "PUT":
+                var idComment = Request["txtIdComment"];
+                resultPost = Put(idComment,idUser, matter, name, comment);
+                ViewComments();
 
 
+                break;
+            case "POST":
+                resultPost = Post(idUser, matter, name, comment);
+                ViewComments();
 
-        }
-        catch (Exception ex)
-        {
+                break;
 
-            result = ex.Message;
-        }
-
-        if(result == "Success")
-        {
-            if(File.Exists(pathFile))
-            {
-                comentData = File.ReadAllLines(pathFile);
-                if(comentData == null)
-                {
-                    resultReadFile = "No hay comentarios";
-                }
-                resultReadFile = "ok";
-            }
+            case "DELETE":
+                var idCommentDelete = Request["txtIdCommentDelete"];
+                Delete(idCommentDelete);
+                ViewComments();
+                break;
 
         }
 
     }
-}
+
+    void ViewComments()
+    {
+        listDatComnet = Get();
+        resultGet = true;
+    }
+
+    bool Post(string idUser, string materia, string name, string comment)
+    {
+        try
+        {
+            if(File.Exists(pathFile))
+            {
+                var id = File.ReadAllLines(pathFile).Length + 1;
+                var dtaString = id + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+
+                StreamWriter streamWriter = File.AppendText(pathFile);
+                streamWriter.WriteLine(dtaString);
+                streamWriter.Close();
+            }
+            else
+            {
+                CreateFile();
+                var id = File.ReadAllLines(pathFile).Length + 1;
+                var dtaString = id + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+
+                StreamWriter streamWriter = File.AppendText(pathFile);
+                streamWriter.WriteLine(dtaString);
+                streamWriter.Close();
+            }
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    List<string> Get()
+    {
+        List<string> list = new List<string>();
+        if(File.Exists(pathFile))
+        {
+            string row;
+            StreamReader streamReader = File.OpenText(pathFile);
+            row = streamReader.ReadLine();
+            while(row != null)
+            {
+                list.Add(row);
+                row = streamReader.ReadLine();
+            }
+            streamReader.Close();
+        }
+        return list;
+
+    }
+    List<string> GetMatters()
+    {
+        List<string> list = new List<string>();
+        if (File.Exists(pathFile))
+        {
+            string row;
+            StreamReader streamReader = File.OpenText(pathFileMatters);
+            row = streamReader.ReadLine();
+            while (row != null)
+            {
+                list.Add(row);
+                row = streamReader.ReadLine();
+            }
+            streamReader.Close();
+        }
+        return list;
+
+    }
+    bool Delete(string idCommentDelete)
+    {
+        bool isDelete = false;
+        try
+        {
+            string line;
+            string[] list;
+            StreamReader streamReader = File.OpenText(pathFile);
+            StreamWriter streamWriter = File.AppendText(pathFileAux);
+            line = streamReader.ReadLine();
+            while (line != null)
+            {
+                list = line.Split(delimiterChar);
+                if(idCommentDelete != list[0])
+                {
+                    streamWriter.WriteLine(line);
+                }
+                else
+                {
+                    isDelete = true;
+                }
+                line = streamReader.ReadLine();
+            }
+            streamReader.Close();
+            streamWriter.Close();
+            File.Delete(pathFile);
+            File.Move(pathFileAux, pathFile);
+            File.Delete(pathFileAux);
+            return isDelete;
+        }
+        catch (Exception)
+        {
+
+
+            return false;
+        }
+    }
+
+    bool Put(string idComment, string idUser, string materia, string name, string comment)
+    {
+        try
+        {
+            string line;
+            string[] dataComments;
+            StreamReader streamReader = File.OpenText(pathFile);
+            StreamWriter streamWriter = File.AppendText(pathFileAux);
+            line = streamReader.ReadLine();
+
+            while(line != null)
+            {
+                dataComments = line.Split(delimiterChar);
+                if(idComment == dataComments[0])
+                {
+
+                    var dtaString = idComment + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+
+                    streamWriter.WriteLine(dtaString);
+
+                }
+                else
+                {
+                    streamWriter.WriteLine(line);
+                }
+                line = streamReader.ReadLine();
+            }
+            streamReader.Close();
+            streamWriter.Close();
+            File.Delete(pathFile);
+            File.Move(pathFileAux, pathFile);
+            File.Delete(pathFileAux);
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+    }
+
+    void CreateFile()
+    {
+        File.CreateText(pathFile);
+    }
+
+
+
+
+    }
 
 <!DOCTYPE html >
 
@@ -80,46 +238,28 @@
     <title></title>
 
     <script>
-        var mostar = document.getElementById('mostrar');
-        var cerrar = document.getElementById('cerrar');
-        var dialogo = document.getElementById('dialogo');
-        var dialogo;
-
-
-        function mostrar() {
-            dialogo = document.getElementById('dialogo');
-            dialogo.showModal();
-            alert("safdsdf");
-
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
         }
-
-        function cerrarDialog() {
-
-            dialogo.close();
+        function sendDialogDelete(idCommentDelete, commentDeleteUpdate) {
+            document.getElementById("idCommentDelete").value = idCommentDelete;
+            document.getElementById("txtCommentDelete").value = commentDeleteUpdate;
         }
+       
 
-        function viewDataComent(name, coment) {
-            document.getElementById("txtNameUpdate").value = name;
-            document.getElementById("txtComentUpdate").value = coment;
-
-        }
+    function viewDataComent(idComment,matter, name,idUser, dateRegister,comment) {
+        document.getElementById("txtMatterUpdate").value = matter;
+        document.getElementById("txtIdUserUpdate").value = idUser;
+        document.getElementById("txtNameUpdate").value = name;
+        document.getElementById("txtCommentUpdate").value = comment;
+        document.getElementById("txtIdUpdate").value = idComment;
+        document.getElementById("txtDateRegister").value = dateRegister;
+    }
 
     </script>
 </head>
 <body>
-
-
-    
-    <dialog id="dialogo" style="overflow:hidden">
-        <content>
-            <p>¡Hola!</p>
-            <button id="mostrar" onclick="cerrarDialog();">Mostrar diálogo</button>
-        </content>
-    </dialog>
-
-
-    <button id="mostrar" onclick="mostrar();">Mostrar diálogo</button>
-
+ 
     <div class="dj-banner">
         <div class="dj-bg">
             <div class="dj-text">
@@ -137,99 +277,172 @@
 
     <div class="container">
         <div class="row comentarios justify-content-center">
-            <div class="col-6">
-                <form action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
+            <div class="col-6" >
+                <form style="background-color:#f1f0ef; padding:20px;" action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
+                    <input type="hidden" name="typeAction" value="POST" />
+                    <div class="form-group"  style=" width:100%;">
+                        <label>
+                            Materia
+                        </label>
+
+                        <select class="form-control form-control-lgt" name="txtMatter" aria-label="Default select example">
+                            <option value="Sin Materia" selected>Sin Materia</option>
+                            @foreach (var item in GetMatters())
+                            {
+                                <option value="@item">@item</option>
+                            }
+
+                        </select>
+                    </div>
+                    <input type="hidden" name="txtIdUser" value="1" />
                     <input type="hidden" name="txtName" value="Andy" />
-                    <textarea name="txtComent" placeholder="Comentario"></textarea>
-
-                    <input class="btn" type="submit" value="Send" name="btnFile" />
+                    <textarea name="txtComment" placeholder="Comentario"></textarea>
+                    <input class="btn" type="submit" value="Comentar" name="btnFile" />
                 </form>
-
                 <div>
                     <h1>Comentarios</h1>
-                    
-                    @if (resultReadFile == "ok")
-                    {
+
+                    @if (resultGet)
+    {
                         <div>
-                            @foreach (string dataLine in comentData)
+                            @foreach (string dataLine in listDatComnet)
                             {
                                 string[] dataItem = dataLine.Split(delimiterChar);
 
                                 <div class="media">
-                                    <img src="https://cdn-icons.flaticon.com/png/512/1509/premium/1509606.png?token=exp=1634098529~hmac=ca35baf2af25e7452e17dd15c1418d7e" width="64" height="64" alt="" />
+                                    <img src="https://cdn-icons.flaticon.com/png/512/1509/premium/1509606.png?token=exp=1634152383~hmac=dfa7fcb3c5f3bff52cd698dc0ee47a76" width="64" height="64" alt="" />
                                     <div class="media-body">
+
                                         <p class="nombre">
-                                            @dataItem[1] <span>7:51 pm, Hoy</span>
+
+                                            @dataItem[2] <span>@DateTime.Parse(dataItem[4]).ToString("t"), @DateTime.Parse(dataItem[4]).ToString("M")</span>
+                                        </p>
+                                        <p>
+                                            <hr />
+                                            <div>
+                                                @dataItem[1]
+                                            </div>
+                                            <hr />
                                         </p>
                                         <p class="comentario">
-                                            @dataItem[2]
+                                            @dataItem[5]
                                         </p>
-                                        <div class="botones text-right">
-                                           
+                                        @if (rolUser == "2")
+                                        {
+                                            <div class="botones text-right">
+                                                <a data-toggle="modal" data-target="#myModal" onclick="viewDataComent('@dataItem[0]', '@dataItem[1]','@dataItem[2]','@dataItem[3]','@dataItem[4]','@dataItem[5]');">Editar</a>
+                                                <a data-toggle="modal" data-target="#myModalDelete" onclick="sendDialogDelete('@dataItem[0]','@dataItem[5]')">Borrar</a>
+                                            </div>
+                                        }
 
-                                            <a data-toggle="modal" data-target="#myModal" onclick="viewDataComent('@dataItem[1]', '@dataItem[2]');">Editar</a>
-                                            <a>Borrar</a>
-                                        </div>
                                     </div>
                                 </div>
                             }
                         </div>
                     }
                 </div>
-
                
-               
-
-                <button type="button" onclick="abrirDialogo('dialogo1')">Abrir diálogo</button>
-
-
             </div>
 
         </div>
         <div class="container">
-            <h2>Modal Example</h2>
-            <!-- Trigger the modal with a button -->
-            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
+            
+            <div class="modal fade" id="myModalDelete" role="dialog">
                 <div class="modal-dialog">
-
-                    <!-- Modal content-->
                     <div class="modal-content modelContainer">
                         <div class="modal-header">
-                            <h4 class="modal-title">Actualizar comentario</h4>
+                            <h4 class="modal-title">Eliminar comentario</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-
                         </div>
-                       
                         <div class="modal-body">
-                            <div>
-                                <p>Usuario: </p>
 
-                                <p>Fecha publicación: </p>
-                            </div>
-                            
-                            <form action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
-                                <input  type="hidden" name="typeAction" value="PUT" />
-                                <input id="txtNameUpdate" type="hidden" name="txtName" value="Andy" />
-                                <textarea id="txtComentUpdate" name="txtComent" placeholder="Comentario"></textarea>
-
-                                <input class="btn" type="submit" value="Actualizar" name="btnFile" />
+                            <form action="" method="post">
+                                <div style="width:100%; text-align:center">
+                                    <h4>¿Estas seguro de eliminar este comentario?</h4>
+                                </div>
+                                <div>
+                                    <input type="hidden" name="typeAction" value="DELETE" />
+                                </div>
+                                <div class="form_comentarios form-group">
+                                    <label>Comentario</label>
+                    
+                                    <input id="txtCommentDelete" class="form-control" type="text"  readonly>
+                                </div>
+                                <div>
+                                    <input id="idCommentDelete" type="hidden" name="txtIdCommentDelete" />
+                                </div>
+                                
+                                    <div class=" form-group" style="margin-right:0; float:right; ">
+                                        <input class="btn btn-warning" data-dismiss="modal" type="button" name="Cancelar" value="Cancelar" />
+                                        <input class="btn btn-success" type="submit" name="Aceptar" value="Aceptar">
+                                    </div>
+                                
                             </form>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content modelContainer">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Actualizar comentario</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                </div>
+
+                                <div class="modal-body">
+
+
+                                    <form action="" method="post" class="form_comentarios">
+                                        <div class="row">
+
+                                            <div class="col form-group">
+                                                <label>Usuario</label>
+                                                <input id="txtNameUpdate" class="form-control" name="txtName" type="text" value="" readonly>
+                                            </div>
+
+                                            <div class=" col form-group">
+                                                <label>Fecha Publicacion</label>
+                                                <input id="txtDateRegister" class="form-control" type="text" value="" readonly>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Materia</label>
+                                            <input id="txtMatterUpdate" name="txtMatter" class="form-control" type="text" value="" readonly>
+                                        </div>
+                                        <input type="hidden" name="typeAction" value="PUT" />
+                                        <input id="txtIdUpdate" type="hidden" name="txtIdComment" />
+
+                                        <input id="txtIdUserUpdate" type="hidden" name="txtIdUser" value="1" />
+                                        <div>
+                                            <label>Comentario</label>
+                                            <textarea id="txtCommentUpdate" name="txtComment" placeholder="Comentario"></textarea>
+                                        </div>
+
+                                        <div class="form_comentarios d-flex justify-content-end flex-wrap ">
+                                            <input class="btn" type="submit" value="Actualizar Comentario" name="btnFile" />
+                                        </div>
+
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
                 </div>
+
+
+
             </div>
-
-        </div>
-
-
-
-    </div>
 </body>
 </html>

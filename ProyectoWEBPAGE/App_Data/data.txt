@@ -1,4 +1,4 @@
-1|Andy|dasdasd
-2|Andy|sdsadasd
-3|Andy|sdsadasd
-4|Andy|sdsadasd
+1|AUDITORIA Y SEGURIDAD INFORMATICA|Andy|1|14/10/2021 0:51:40|materia super chida we
+2|Sin Materia|Andy|1|14/10/2021 0:55:11|
+3|PROCESAMIENTO DIGITAL DE IMAGENES|Andy|1|14/10/2021 0:57:41|asdsadsad
+4|FUNDAMENTOS DE LAS CS. DE LA COMPUTACION	|Andy|1|14/10/2021 0:58:00|sadasdsad
