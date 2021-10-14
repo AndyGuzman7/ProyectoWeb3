@@ -1,0 +1,537 @@
+﻿@{
+
+
+    string rolUser = "2";// 2 = docente / 1 = esudainte
+    bool resultPost;
+    bool resultGet = false;
+    var resultReadFile = "";
+    List<string> listDatComnet = new List<string>();
+    char[] delimiterChar = { '|' };
+
+    var pathFile = Server.MapPath("~/App_Data/data.txt");
+    var pathFileAux = Server.MapPath("~/App_Data/dataAux.txt");
+    var pathFileMatters = Server.MapPath("~/App_Data/matters.txt");
+    Validation.RequireField("txtComment", "El comentario es necesario para publicar");
+
+    ViewComments();
+
+    if (IsPost && Validation.IsValid())
+    {
+
+        string typeAction = Request["typeAction"].ToString();
+
+        var idUser = Request["txtIdUser"];
+        var matter = Request["txtMatter"];
+        var name = Request["txtName"];
+
+        var comment = Request["txtComment"];
+        resultReadFile = name;
+
+        switch (typeAction)
+        {
+            case "GET":
+                listDatComnet = Get();
+
+                break;
+            case "PUT":
+                var idComment = Request["txtIdComment"];
+                resultPost = Put(idComment, idUser, matter, name, comment);
+                ViewComments();
+
+
+                break;
+            case "POST":
+                resultPost = Post(idUser, matter, name, comment);
+                ViewComments();
+
+                break;
+
+            case "DELETE":
+                var idCommentDelete = Request["txtIdCommentDelete"];
+                Delete(idCommentDelete);
+                ViewComments();
+                break;
+
+        }
+
+    }
+
+
+
+
+
+
+
+    void ViewComments()
+    {
+        listDatComnet = Get();
+        resultGet = true;
+        CreateFile();
+    }
+
+    bool Post(string idUser, string materia, string name, string comment)
+    {
+        try
+        {
+            if (File.Exists(pathFile))
+            {
+                string row;
+                StreamReader streamReader = File.OpenText(pathFile);
+                row = streamReader.ReadLine();
+                string line = "";
+                while (row != null)
+                {
+                    line = row;
+                    row = streamReader.ReadLine();
+                }
+                streamReader.Close();
+
+                string[] line2 = line.Split(delimiterChar);
+                int id = line2[0].AsInt() + 1;
+                var dtaString = id + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+
+                StreamWriter streamWriter = File.AppendText(pathFile);
+                streamWriter.WriteLine(dtaString);
+                streamWriter.Close();
+            }
+            else
+            {
+                CreateFile();
+                var id = File.ReadAllLines(pathFile).Length + 1;
+                var dtaString = id + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+
+                StreamWriter streamWriter = File.AppendText(pathFile);
+                streamWriter.WriteLine(dtaString);
+                streamWriter.Close();
+            }
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    List<string> Get()
+    {
+        List<string> list = new List<string>();
+        if (File.Exists(pathFile))
+        {
+            string row;
+            StreamReader streamReader = File.OpenText(pathFile);
+            row = streamReader.ReadLine();
+            while (row != null)
+            {
+                list.Add(row);
+                row = streamReader.ReadLine();
+            }
+            streamReader.Close();
+        }
+        return list;
+
+    }
+    List<string> GetMatters()
+    {
+        List<string> list = new List<string>();
+        if (File.Exists(pathFileMatters))
+        {
+            string row;
+            StreamReader streamReader = File.OpenText(pathFileMatters);
+            row = streamReader.ReadLine();
+            while (row != null)
+            {
+                list.Add(row);
+                row = streamReader.ReadLine();
+            }
+            streamReader.Close();
+        }
+        return list;
+
+    }
+    bool Delete(string idCommentDelete)
+    {
+        bool isDelete = false;
+        try
+        {
+            string line;
+            string[] list;
+            StreamReader streamReader = File.OpenText(pathFile);
+            StreamWriter streamWriter = File.AppendText(pathFileAux);
+            line = streamReader.ReadLine();
+            while (line != null)
+            {
+                list = line.Split(delimiterChar);
+                if (idCommentDelete != list[0])
+                {
+                    streamWriter.WriteLine(line);
+                }
+                else
+                {
+                    isDelete = true;
+                }
+                line = streamReader.ReadLine();
+            }
+            streamReader.Close();
+            streamWriter.Close();
+            File.Delete(pathFile);
+            File.Move(pathFileAux, pathFile);
+            File.Delete(pathFileAux);
+            return isDelete;
+        }
+        catch (Exception)
+        {
+
+
+            return false;
+        }
+    }
+
+    bool Put(string idComment, string idUser, string materia, string name, string comment)
+    {
+        try
+        {
+            string line;
+            string[] dataComments;
+            StreamReader streamReader = File.OpenText(pathFile);
+            StreamWriter streamWriter = File.AppendText(pathFileAux);
+            line = streamReader.ReadLine();
+
+            while (line != null)
+            {
+                dataComments = line.Split(delimiterChar);
+                if (idComment == dataComments[0])
+                {
+
+                    var dtaString = idComment + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+
+                    streamWriter.WriteLine(dtaString);
+
+                }
+                else
+                {
+                    streamWriter.WriteLine(line);
+                }
+                line = streamReader.ReadLine();
+            }
+            streamReader.Close();
+            streamWriter.Close();
+            File.Delete(pathFile);
+            File.Move(pathFileAux, pathFile);
+            File.Delete(pathFileAux);
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+    }
+
+    void CreateFile()
+    {
+        if (!File.Exists(pathFile))
+        {
+            File.CreateText(pathFile);
+        }
+
+    }
+
+
+
+
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/styleComent.css" />
+    <link rel="stylesheet" href="~/css/styleModal.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title></title>
+
+    <script>
+
+
+    </script>
+</head>
+<body>
+
+    <div class="dj-banner">
+        <div class="dj-bg">
+            <div class="dj-text">
+                <h1><b>Ingenieria de sistemas</b></h1>
+                <p>Materias y malla curricular.</p>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <img class="img-fluid " alt="Responsive image" src="~/Images/mallaCurricular.png">
+    </div>
+
+    <div class="container">
+
+        
+
+        <div class="container">
+            <div class="row comentarios justify-content-center">
+                <div class="col-6" style="background-color:#f1f0ef">
+                    <form style="background-color:#f1f0ef; padding:20px;" action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
+                        <input type="hidden" name="typeAction" value="POST" />
+                        <div class="form-group" style=" width:100%;">
+                            <label>
+                                Materia
+                            </label>
+
+                            <select class="form-control form-control-lgt" name="txtMatter" aria-label="Default select example">
+                                <option value="Sin Materia" selected>Sin Materia</option>
+                                @foreach (var item in GetMatters())
+                                {
+                                    <option value="@item">@item</option>
+                                }
+
+                            </select>
+                        </div>
+                        <input type="hidden" name="txtIdUser" value="1" />
+                        <input type="hidden" name="txtName" value="Andy" />
+                        <textarea name="txtComment" placeholder="Comentario"></textarea>
+
+                        <input class="btn" type="submit" value="Comentar" name="btnFile" />
+
+                    </form>
+                    
+                    @Html.ValidationSummary()
+
+
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <h1>Comentarios</h1>
+
+            @if (resultGet)
+            {
+                <div class="row">
+                    @foreach (string dataLine in listDatComnet)
+                    {
+                        string[] dataItem = dataLine.Split(delimiterChar);
+                        <div class="col-sm-3">
+                            <div class="media card" style="margin-top:20px;padding:20px;">
+                                <img src="https://cdn-icons.flaticon.com/png/512/1509/premium/1509606.png?token=exp=1634152383~hmac=dfa7fcb3c5f3bff52cd698dc0ee47a76" width="64" height="64" alt="" />
+                                <div class="media-body" style="width:100%">
+
+                                    <p class="nombre">
+
+                                        @dataItem[2]
+                                        <span>
+                                            @{
+                                                DateTime fecha1 = DateTime.Now;
+                                                DateTime fecha2 = DateTime.Parse(@DateTime.Parse(dataItem[4]).ToString("T"));
+                                                int h = fecha1.Subtract(fecha2).Hours;
+                                                int m = fecha1.Subtract(fecha2).Minutes;
+                                                int s = fecha1.Subtract(fecha2).Seconds;
+                                                if (DateTime.Parse(dataItem[4]).Date == DateTime.Now.Date)
+                                                {
+                                                    if (h == 0)
+                                                    {
+                                                        if (m == 0)
+                                                        {
+                                                            if (s == 0)
+                                                            {
+                                                                <a>reciente</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                if (s == 1)
+                                                                {
+                                                                    <a>hace @s segundo</a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a>hace @s segundos</a>
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (m == 1)
+                                                            {
+                                                                <a>hace @m minuto</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a>hace @m minutos</a>
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (h < 0)
+                                                        {
+                                                            h = h + 24;
+                                                            if (h == 1)
+                                                            {
+                                                                <a>hace @h hora</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a>hace @h horas</a>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (h == 1)
+                                                            {
+                                                                <a>hace @h hora</a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a>hace @h horas</a>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            @if (DateTime.Parse(dataItem[4]).Date < DateTime.Now.Date)
+                                            {@DateTime.Parse(dataItem[4]).ToString("M")}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <hr />
+                                        <div>
+                                            @dataItem[1]
+                                        </div>
+                                        <hr />
+                                    </p>
+
+                                    <p class="comentario ">
+                                        @dataItem[5]
+                                    </p>
+
+
+                                    @if (rolUser == "2")
+                                    {
+                                        <div class="botones text-right">
+                                            <a data-toggle="modal" data-target="#myModal" onclick="viewDataComent('@dataItem[0]', '@dataItem[1]','@dataItem[2]','@dataItem[3]','@dataItem[4]','@dataItem[5]');">Editar</a>
+                                            <a data-toggle="modal" data-target="#myModalDelete" onclick="sendDialogDelete('@dataItem[0]','@dataItem[5]')">Borrar</a>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="container">
+
+            <div class="modal fade" id="myModalDelete" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content modelContainer">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Eliminar comentario</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" method="post">
+                                <div style="width:100%; text-align:center">
+                                    <h4>¿Estas seguro de eliminar este comentario?</h4>
+                                </div>
+                                <div>
+                                    <input type="hidden" name="typeAction" value="DELETE" />
+                                </div>
+                                <div class="form_comentarios form-group">
+                                    <label>Comentario</label>
+
+                                    <input id="txtCommentDelete" class="form-control" type="text" readonly>
+                                </div>
+                                <div>
+                                    <input id="idCommentDelete" type="hidden" name="txtIdCommentDelete" />
+                                </div>
+
+                                <div class=" form-group" style="margin-right:0; float:right; ">
+                                    <input class="btn btn-warning" data-dismiss="modal" type="button" name="Cancelar" value="Cancelar" />
+                                    <input class="btn btn-success" type="submit" name="Aceptar" value="Aceptar">
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content modelContainer">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Actualizar comentario</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                        </div>
+
+                        <div class="modal-body">
+
+
+                            <form action="" method="post" class="form_comentarios">
+                                <div class="row">
+
+                                    <div class="col form-group">
+                                        <label>Usuario</label>
+                                        <input id="txtNameUpdate" class="form-control" name="txtName" type="text" value="" readonly>
+                                    </div>
+
+                                    <div class=" col form-group">
+                                        <label>Fecha Publicacion</label>
+                                        <input id="txtDateRegister" class="form-control" type="text" value="" readonly>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label>Materia</label>
+                                    <input id="txtMatterUpdate" name="txtMatter" class="form-control" type="text" value="" readonly>
+                                </div>
+                                <input type="hidden" name="typeAction" value="PUT" />
+                                <input id="txtIdUpdate" type="hidden" name="txtIdComment" />
+
+                                <input id="txtIdUserUpdate" type="hidden" name="txtIdUser" value="1" />
+                                <div>
+                                    <label>Comentario</label>
+                                    <textarea id="txtCommentUpdate" name="txtComment" placeholder="Comentario"></textarea>
+                                </div>
+
+                                <div class="form_comentarios d-flex justify-content-end flex-wrap ">
+                                    <input class="btn" type="submit" value="Actualizar Comentario" name="btnFile" />
+                                </div>
+
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <script src="~/js/functionality.js"></script>
+</body>
+</html>
