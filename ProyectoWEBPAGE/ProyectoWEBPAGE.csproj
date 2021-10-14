@@ -88,10 +88,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="style.css" />
+    <Content Include="css\styleBody.css" />
     <Content Include="Images\mallaCurricular.png" />
-    <Content Include="styleComent.css" />
-    <Content Include="styleModal.css" />
+    <Content Include="css\styleComent.css" />
+    <Content Include="css\styleModal.css" />
+    <Content Include="js\functionality.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="ViewPage1.cshtml" />
+    <Content Include="pages\PageMatter.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -109,7 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="css\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
