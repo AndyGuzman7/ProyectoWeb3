@@ -1,0 +1,47 @@
+﻿@{
+    Layout = null;
+    var sesion = 0;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    
+    <meta charset="utf-8">
+    
+    <link href="~/css/styleHeader.css" rel="stylesheet" />
+    <title></title>
+</head>
+<body>
+    <div class="row" id="header">
+        <div class="col-md-3" id="logo">
+            <a href="~/index.cshtml">
+                <img src="~/Images/logo_lema.png" class="img-fluid sm-2" alt="Univalle" />
+            </a>
+        </div>
+        <div class="col-md-2" id="inicio">
+            <a class="option sm-2" href="">INICIO</a>
+        </div>
+        <div class="col-md-2" id="materias">
+            <a class="option sm-2" href="~/pages/PageMatter.cshtml">MATERIAS</a>
+        </div>
+        <div class="col-md-2" id="docentes">
+            <a class="option sm-2" href="~/pages/PageTeacher.cshtml">DOCENTES</a>
+        </div>
+        @if (sesion != 1)
+        {
+            <div class="col-md-3" id="login">
+                <a href="" class="sesion sm-2">Iniciar&nbsp;Sesión</a>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3" id="login">
+                <input type="text" name="txtUsuario" class="user sm-2" disabled="disabled" value="Nicolas Soria" />
+            </div>
+        }
+    </div>
+</body>
+</html>

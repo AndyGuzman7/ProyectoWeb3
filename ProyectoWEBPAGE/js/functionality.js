@@ -1,11 +1,11 @@
 ﻿if (window.history.replaceState) {
     window.history.replaceState(null, null, window.location.href);
 }
+
 function sendDialogDelete(idCommentDelete, commentDeleteUpdate) {
     document.getElementById("idCommentDelete").value = idCommentDelete;
     document.getElementById("txtCommentDelete").value = commentDeleteUpdate;
 }
-
 
 function viewDataComent(idComment, matter, name, idUser, dateRegister, comment) {
     document.getElementById("txtMatterUpdate").value = matter;

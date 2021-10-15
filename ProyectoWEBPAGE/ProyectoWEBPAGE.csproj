@@ -89,9 +89,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\styleBody.css" />
+    <Content Include="css\styleBody2.css" />
+    <Content Include="css\styleHeader.css" />
+    <Content Include="Images\logo_lema.png" />
     <Content Include="Images\mallaCurricular.png" />
     <Content Include="css\styleComent.css" />
     <Content Include="css\styleModal.css" />
+    <Content Include="Images\univalle_direccion.png" />
     <Content Include="js\functionality.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -101,6 +105,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="pages\PageMatter.cshtml" />
+    <Content Include="pages\PageTeacher.cshtml" />
+    <Content Include="pages\_header.cshtml" />
+    <Content Include="pages\_footer.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
