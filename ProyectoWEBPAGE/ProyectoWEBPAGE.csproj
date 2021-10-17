@@ -88,7 +88,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\carrusel.css" />
     <Content Include="css\styleBody.css" />
+    <Content Include="css\styleIndex.css" />
+    <Content Include="Images\logo-uv.png" />
     <Content Include="Images\mallaCurricular.png" />
     <Content Include="css\styleComent.css" />
     <Content Include="css\styleModal.css" />
@@ -101,6 +104,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="pages\PageMatter.cshtml" />
+    <Content Include="pages\index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
