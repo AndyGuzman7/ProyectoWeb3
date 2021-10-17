@@ -1,27 +1,26 @@
 ﻿@{
-    string rolUser = "2";// 2 = docente / 1 = esudainte
+    string rolUser = "1";// 2 = docente / 1 = esudiante
     bool resultPost;
     bool resultGet = false;
     var resultReadFile = "";
     List<string> listDatComnet = new List<string>();
     char[] delimiterChar = { '|' };
 
-    var pathFile = Server.MapPath("~/App_Data/data.txt");
-    var pathFileAux = Server.MapPath("~/App_Data/dataAux.txt");
-    var pathFileMatters = Server.MapPath("~/App_Data/matters.txt");
-    var matter = Request["txtMatter"];
+    var pathFile = Server.MapPath("~/App_Data/datos.txt");
+    var pathFileAux = Server.MapPath("~/App_Data/dataEx.txt");
+    var pathFileTeachers = Server.MapPath("~/App_Data/teachers.txt");
+    var teacher = Request["txtTeacher"];
+
     Validation.RequireField("txtComment", "El comentario es necesario para publicar");
 
     ViewComments();
 
     if (IsPost)
     {
-
         string typeAction = Request["typeAction"].ToString();
 
         var idUser = Request["txtIdUser"];
         var name = Request["txtName"];
-
         var comment = Request["txtComment"];
         resultReadFile = name;
 
@@ -29,19 +28,18 @@
         {
             case "GET":
                 listDatComnet = Get();
-
                 break;
+
             case "PUT":
                 var idComment = Request["txtIdComment"];
-                resultPost = Put(idComment, idUser, matter, name, comment);
+                resultPost = Put(idComment, idUser, teacher, name, comment);
                 ViewComments();
-
-
                 break;
+
             case "POST":
                 if (Validation.IsValid())
                 {
-                    resultPost = Post(idUser, matter, name, comment);
+                    resultPost = Post(idUser, teacher, name, comment);
                     ViewComments();
                 }
                 break;
@@ -52,6 +50,7 @@
                 ViewComments();
                 break;
         }
+
     }
 
     void ViewComments()
@@ -61,7 +60,7 @@
         CreateFile();
     }
 
-    bool Post(string idUser, string materia, string name, string comment)
+    bool Post(string idUser, string docente, string name, string comment)
     {
         try
         {
@@ -80,7 +79,7 @@
 
                 string[] line2 = line.Split(delimiterChar);
                 int id = line2[0].AsInt() + 1;
-                var dtaString = id + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+                var dtaString = id + "|" + docente + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
 
                 StreamWriter streamWriter = File.AppendText(pathFile);
                 streamWriter.WriteLine(dtaString);
@@ -90,7 +89,7 @@
             {
                 CreateFile();
                 var id = File.ReadAllLines(pathFile).Length + 1;
-                var dtaString = id + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+                var dtaString = id + "|" + docente + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
 
                 StreamWriter streamWriter = File.AppendText(pathFile);
                 streamWriter.WriteLine(dtaString);
@@ -99,7 +98,7 @@
             return true;
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
@@ -123,13 +122,13 @@
         return list;
 
     }
-    List<string> GetMatters()
+    List<string> GetTeachers()
     {
         List<string> list = new List<string>();
-        if (File.Exists(pathFileMatters))
+        if (File.Exists(pathFileTeachers))
         {
             string row;
-            StreamReader streamReader = File.OpenText(pathFileMatters);
+            StreamReader streamReader = File.OpenText(pathFileTeachers);
             row = streamReader.ReadLine();
             while (row != null)
             {
@@ -173,13 +172,11 @@
         }
         catch (Exception)
         {
-
-
             return false;
         }
     }
 
-    bool Put(string idComment, string idUser, string materia, string name, string comment)
+    bool Put(string idComment, string idUser, string docente, string name, string comment)
     {
         try
         {
@@ -195,7 +192,7 @@
                 if (idComment == dataComments[0])
                 {
 
-                    var dtaString = idComment + "|" + materia + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
+                    var dtaString = idComment + "|" + docente + "|" + name + "|" + idUser + "|" + DateTime.Now + "|" + comment;
 
                     streamWriter.WriteLine(dtaString);
 
@@ -214,11 +211,10 @@
             return true;
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
-
     }
 
     void CreateFile()
@@ -227,32 +223,25 @@
         {
             File.CreateText(pathFile);
         }
-
     }
 }
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/css/styleBody2.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
-    <link rel="stylesheet" href="~/css/styleBody.css" />
     <link rel="stylesheet" href="~/css/styleComent.css" />
     <link rel="stylesheet" href="~/css/styleModal.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <meta charset="utf-8">
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title></title>
-
-    <script>
-
-
-    </script>
 </head>
 <body>
     @RenderPage("_header.cshtml")
@@ -260,19 +249,11 @@
         <div class="dj-bg">
             <div class="dj-text">
                 <h1><b>Ingenieria de sistemas</b></h1>
-                <p>Materias y malla curricular.</p>
-
+                <p>Docentes.</p>
             </div>
         </div>
     </div>
-
-
     <div class="container">
-        <img class="img-fluid " alt="Responsive image" src="~/Images/mallaCurricular.png">
-    </div>
-
-    <div class="container">
-
         <div class="container">
             @if (rolUser == "1")
             {
@@ -282,44 +263,35 @@
                             <input type="hidden" name="typeAction" value="POST" />
                             <div class="form-group" style=" width:100%;">
                                 <label>
-                                    Materia
+                                    Docente
                                 </label>
-
-                                <select class="form-control form-control-lgt" name="txtMatter" aria-label="Default select example">
-                                    @if (matter == null)
+                                <select class="form-control form-control-lgt" name="txtTeacher" aria-label="Default select example">
+                                    @if (teacher == null)
                                     {
-                                        <option value="Sin materia" selected>Sin materia</option>
+                                        <option selected>Todos</option>
                                     }
                                     else
                                     {
-                                        <option selected>@matter</option>
+                                        <option selected>@teacher</option>
                                     }
-                                    @foreach (var item in GetMatters())
+                                    @foreach (var item in GetTeachers())
                                     {
                                         <option value="@item">@item</option>
                                     }
-
                                 </select>
                             </div>
                             <input type="hidden" name="txtIdUser" value="1" />
-                            <input type="hidden" name="txtName" value="Andy" />
+                            <input type="hidden" name="txtName" value="Nicolas" />
                             <textarea name="txtComment" placeholder="Comentario"></textarea>
-
                             <input class="btn" type="submit" value="Comentar" name="btnFile" />
-
                         </form>
-
                         @Html.ValidationSummary()
-
-
                     </div>
-
                 </div>
             }
         </div>
         <div>
             <h1>Comentarios</h1>
-
             @if (resultGet)
             {
                 <div class="row">
@@ -327,12 +299,10 @@
                     {
                         string[] dataItem = dataLine.Split(delimiterChar);
                         <div class="col-sm-3">
-                            <div class="media card" style="margin-top:20px; margin-bottom:20px; padding:20px;">
+                            <div class="media card" style="margin-top:20px; margin-bottom:20px;padding:20px;">
                                 <img src="https://cdn-icons.flaticon.com/png/512/1509/premium/1509606.png?token=exp=1634152383~hmac=dfa7fcb3c5f3bff52cd698dc0ee47a76" width="64" height="64" alt="" />
                                 <div class="media-body" style="width:100%">
-
                                     <p class="nombre">
-
                                         @dataItem[2]
                                         <span>
                                             @{
@@ -418,8 +388,6 @@
                                     <p class="comentario ">
                                         @dataItem[5]
                                     </p>
-
-
                                     @if (rolUser == "2")
                                     {
                                         <div class="botones text-right">
@@ -427,7 +395,6 @@
                                             <a data-toggle="modal" data-target="#myModalDelete" style="cursor:pointer;" onclick="sendDialogDelete('@dataItem[0]','@dataItem[5]')">Borrar</a>
                                         </div>
                                     }
-
                                 </div>
                             </div>
                         </div>
@@ -436,7 +403,6 @@
             }
         </div>
         <div class="container">
-
             <div class="modal fade" id="myModalDelete" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content modelContainer">
@@ -445,7 +411,6 @@
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-
                             <form action="" method="post">
                                 <div style="width:100%; text-align:center">
                                     <h4>¿Estas seguro de eliminar este comentario?</h4>
@@ -455,53 +420,42 @@
                                 </div>
                                 <div class="form_comentarios form-group">
                                     <label>Comentario</label>
-
                                     <input id="txtCommentDelete" class="form-control" type="text" readonly>
                                 </div>
                                 <div>
                                     <input id="idCommentDelete" type="hidden" name="txtIdCommentDelete" />
                                 </div>
-
                                 <div class=" form-group" style="margin-right:0; float:right; ">
                                     <input class="btn btn-warning" data-dismiss="modal" type="button" name="Cancelar" value="Cancelar" />
                                     <input class="btn btn-success" type="submit" name="Aceptar" value="Aceptar">
                                 </div>
-
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="modal fade" id="myModal" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content modelContainer">
                         <div class="modal-header">
                             <h4 class="modal-title">Actualizar comentario</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-
                         </div>
-
                         <div class="modal-body">
-
-
                             <form action="" method="post" class="form_comentarios">
                                 <div class="row">
-
                                     <div class="col form-group">
                                         <label>Usuario</label>
                                         <input id="txtNameUpdate" class="form-control" name="txtName" type="text" value="" readonly>
                                     </div>
-
                                     <div class=" col form-group">
                                         <label>Fecha Publicacion</label>
                                         <input id="txtDateRegister" class="form-control" type="text" value="" readonly>
                                     </div>
-
                                 </div>
                                 <div class="form-group">
-                                    <label>Materia</label>
-                                    <input id="txtMatterUpdate" name="txtMatter" class="form-control" type="text" value="" readonly>
+                                    <label>Docente</label>
+                                    <input id="txtMatterUpdate" name="txtTeacher" class="form-control" type="text" value="" readonly>
                                 </div>
                                 <input type="hidden" name="typeAction" value="PUT" />
                                 <input id="txtIdUpdate" type="hidden" name="txtIdComment" />
@@ -511,25 +465,20 @@
                                     <label>Comentario</label>
                                     <textarea id="txtCommentUpdate" name="txtComment" placeholder="Comentario"></textarea>
                                 </div>
-
                                 <div class="form_comentarios d-flex justify-content-end flex-wrap ">
                                     <input class="btn" type="submit" value="Actualizar Comentario" name="btnFile" />
                                 </div>
-
-
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
-
                 </div>
             </div>
-
         </div>
-        <script src="~/js/functionality.js"></script>
     </div>
     @RenderPage("_footer.cshtml")
+    <script src="~/js/functionality.js"></script>
 </body>
 </html>

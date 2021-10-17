@@ -1,29 +1,29 @@
-﻿
-.dj-banner {
+﻿.dj-banner {
     margin: 20px 0;
     position: relative;
 }
 
     .dj-banner .dj-bg {
-        background-image: url("https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+        background-image: url("https://cdn.techtitute.com/techtitute/cursos/00899593/recursos/contenidos/diplomado-did%C3%A1ctica-de-tecnolog%C3%ADa-e-inform%C3%A1tica.jpg");
         background-repeat: no-repeat;
-        background-position: center;
+        background-position: top;
         background-size: cover;
         width: 100%;
-        height:400px;
+        height: 400px;
         vertical-align: middle
     }
 
     .dj-banner .dj-text {
-       color:white;
+        color: black;
         position: absolute;
         top: 50%;
         left: 10%;
         transform: translate(-10%, -50%);
-        padding:20px;
-        width:100%;
+        padding: 20px;
+        width: 100%;
         text-align: center;
     }
+
         .dj-banner .dj-text h1 {
             font-size: 70px;
         }
@@ -34,10 +34,10 @@
 
 
 
-@media  (max-width:670px) {
+@media (max-width:670px) {
 
     .dj-banner .dj-bg {
-        background-image: url("https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+        background-image: url("https://cdn.techtitute.com/techtitute/cursos/00899593/recursos/contenidos/diplomado-did%C3%A1ctica-de-tecnolog%C3%ADa-e-inform%C3%A1tica.jpg");
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
@@ -45,6 +45,7 @@
         height: 300px;
         vertical-align: middle;
     }
+
     .dj-banner .dj-text h1 {
         font-size: calc(4.5*1.5vw);
     }
@@ -52,7 +53,4 @@
     .dj-banner .dj-text p {
         font-size: calc(2.5*1.5vw);
     }
-   
 }
-
-
