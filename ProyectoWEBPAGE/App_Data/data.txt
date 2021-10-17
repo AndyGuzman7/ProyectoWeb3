@@ -1,4 +1,3 @@
-2|ANIMACION DIGITAL|Andy|1|17/10/2021 16:41:30|jkljkljkljkljkljkl
-3|PRACTICA PROFESIONAL|Andy|1|14/10/2021 19:41:14|Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint ocasionalecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+2|ANIMACION DIGITAL|Andy|1|17/10/2021 17:18:25|funciuiona
 9|IOT Y ROBOTICA|Andy|1|17/10/2021 16:43:00|zxczxcxzczxcz
 10|GAME DEVELOPMENT|Andy|1|15/10/2021 16:50:29|12312313123132131231

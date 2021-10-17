@@ -8,21 +8,24 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <meta charset="utf-8">
-    
-    <link href="~/css/styleHeader.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title></title>
+    <link href="~/css/styleHeader.css" rel="stylesheet" />
 </head>
 <body>
     <div class="row" id="header">
         <div class="col-md-3" id="logo">
-            <a href="~/index.cshtml">
+            <a href="~/pages/index.cshtml">
                 <img src="~/Images/logo_lema.png" class="img-fluid sm-2" alt="Univalle" />
             </a>
         </div>
         <div class="col-md-2" id="inicio">
-            <a class="option sm-2" href="">INICIO</a>
+            <a class="option sm-2" href="~/pages/index.cshtml">INICIO</a>
         </div>
         <div class="col-md-2" id="materias">
             <a class="option sm-2" href="~/pages/PageMatter.cshtml">MATERIAS</a>
