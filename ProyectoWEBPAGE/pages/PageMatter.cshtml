@@ -1,5 +1,19 @@
 ﻿@{
-    string rolUser = "2";// 2 = docente / 1 = esudainte
+    string rolUser = "0";
+    var sessionID = "";
+    var sessionName = "";
+    var sessionRole = "";
+    if (Session["sessionUserID"] !=null && Session["sessionUserName"] != null && Session["sessionUserRole"] != null)
+    {
+        sessionID = Session["sessionUserID"].ToString();
+        sessionName = Session["sessionUserName"].ToString();
+        sessionRole = Session["sessionUserRole"].ToString();
+
+        rolUser = sessionRole.ToString();// 2 = docente / 1 = esudainte
+    }
+
+
+
     bool resultPost;
     bool resultGet = false;
     var resultReadFile = "";
@@ -11,6 +25,8 @@
     var pathFileMatters = Server.MapPath("~/App_Data/matters.txt");
     var matter = Request["txtMatter"];
     Validation.RequireField("txtComment", "El comentario es necesario para publicar");
+
+    string nameUser="";
 
     ViewComments();
 
@@ -27,6 +43,9 @@
 
         switch (typeAction)
         {
+            case "initPage":
+                nameUser = Request["nameUser"];
+                break;
             case "GET":
                 listDatComnet = Get();
 
@@ -41,7 +60,7 @@
             case "POST":
                 if (Validation.IsValid())
                 {
-                    resultPost = Post(idUser, matter, name, comment);
+                    resultPost = Post(sessionID, matter, sessionName, comment);
                     ViewComments();
                 }
                 break;
@@ -255,6 +274,7 @@
     </script>
 </head>
 <body>
+
     @RenderPage("_header.cshtml")
     <div class="dj-banner">
         <div class="dj-bg">
@@ -266,7 +286,6 @@
         </div>
     </div>
 
-
     <div class="container">
         <img class="img-fluid " alt="Responsive image" src="~/Images/mallaCurricular.png">
     </div>
@@ -274,7 +293,7 @@
     <div class="container">
 
         <div class="container">
-            @if (rolUser == "1")
+            @if (rolUser == "Estudiante")
             {
                 <div class="row comentarios justify-content-center">
                     <div class="col-6" style="background-color:#f1f0ef">
@@ -328,7 +347,7 @@
                         string[] dataItem = dataLine.Split(delimiterChar);
                         <div class="col-sm-3">
                             <div class="media card" style="margin-top:20px; margin-bottom:20px; padding:20px;">
-                                <img src="https://cdn-icons.flaticon.com/png/512/1509/premium/1509606.png?token=exp=1634152383~hmac=dfa7fcb3c5f3bff52cd698dc0ee47a76" width="64" height="64" alt="" />
+                                <img src="~/Images/userImage.png" width="45" height="45" alt="" />
                                 <div class="media-body" style="width:100%">
 
                                     <p class="nombre">
@@ -420,7 +439,7 @@
                                     </p>
 
 
-                                    @if (rolUser == "2")
+                                    @if (rolUser == "Docente")
                                     {
                                         <div class="botones text-right">
                                             <a data-toggle="modal" data-target="#myModal" style="cursor:pointer;" onclick="viewDataComent('@dataItem[0]', '@dataItem[1]','@dataItem[2]','@dataItem[3]','@dataItem[4]','@dataItem[5]');">Editar</a>

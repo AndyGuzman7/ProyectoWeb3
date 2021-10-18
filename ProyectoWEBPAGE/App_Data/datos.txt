@@ -2,3 +2,7 @@
 4|PAVEL CACERES TORREZ|Nicolas|1|15/10/2021 16:23:55|ghjghjghjghjghjghj
 5|OSCAR CONTRERAS CARRASCO|Nicolas|1|15/10/2021 16:22:21|123123131
 6|KENY VIDANGOS ORELLANA|Nicolas|1|15/10/2021 17:24:08|vbnvbnvbnvbnvbn
+7|PAVEL CACERES TORREZ|Nicolas|1|17/10/2021 21:58:55|Hola mundo
+8|ZULMA OLMOS FORONDA|Carlos Alejandro Severich  Butron|42|18/10/2021 13:30:58|LOREM
+9|PABLO GUZMAN MORALES|Carlos Alejandro Severich  Butron|42|18/10/2021 13:44:10|lorem
+10|HECTOR OLMOS BARRIOS|Carlos Alejandro Severich  Butron|42|18/10/2021 14:09:59|muy buen ingeniero, tienes razón

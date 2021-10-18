@@ -1,0 +1,105 @@
+﻿@{
+    var db = Database.Open("connectionstring");
+    var email = Request.Form["txtEmail"];
+    var password = Request.Form["txtPassword"];
+
+    var msg = "";
+
+    if (IsPost)
+    {
+        try
+        {
+
+            var query = "SELECT idUser, name, lastName, secondLastName, email, password, role FROM [User] WHERE email = @0 AND password = HASHBYTES('md5', @1)";
+            var resultString = db.Query(query, email, password);
+
+            var userid = 0;
+            var fullName = "";
+            var role = "";
+            var roleEncrypt = "";
+            var userIdEncrypt = "";
+            var fullNameEncrypt = "";
+
+            var res = db.QueryValue(query, email, password);
+
+
+            if (res > 0)
+            {
+                foreach (var item in resultString)
+                {
+                    role = item.role;
+                    roleEncrypt = Encrypt(role);
+                    fullName = item.name + " " + item.lastName + " " + item.secondLastName;
+                    userid = item.idUser;
+                    userIdEncrypt = Encrypt(userid.ToString());
+                    fullNameEncrypt = Encrypt(fullName);
+                }
+                Session["sessionUserID"] = userid;
+                Session["sessionUserName"] = fullName;
+                Session["sessionUserRole"] = role;
+                Response.Redirect("~/pages/index");
+
+
+            }
+            else
+            {
+                msg = "Write the address and password correctly.";
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+    }
+    string Encrypt(string data)
+    {
+        byte[] encryp = System.Text.Encoding.Unicode.GetBytes(data.ToString());
+        return Convert.ToBase64String(encryp);
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    
+</head>
+<body class="container">
+    <div class=" vh-100 row justify-content-around align-items-center ">
+        <div class="shadow-lg p-3 mb-5 bg-white rounded col-sm-4 ">
+
+            <img src="~/images/UnivalleLogo.png" class="img-fluid mb-3" />
+
+            <form action="" method="post">
+                <div class="form-group">
+                    <label for="txtEmail">Email Address</label> <br />
+                    <input class="form-control" type="text" name="txtEmail" required />
+                </div>
+                <div>
+                    <label for="txtPassword">Password</label>
+                    <input type="password" name="txtPassword" class="form-control" required />
+                </div>
+                <br />
+                <div>
+                    <input type="submit" name="btnSend" value="Login" class="btn btn-primary w-100" />
+                </div>  <br />
+                <div class=" form-row text-center m-lg-1">
+                    <a href="~/pages/PageRegister.cshtml">Register</a> <br />
+                </div>
+                <div class=" form-row text-center m-lg-1">
+                    <a style="align-items: flex-end" href="~/pages/index.cshtml">Exit</a>
+                </div>
+            </form>
+            <br />
+            <label>@msg</label>
+        </div>
+    </div>
+</body>
+</html>

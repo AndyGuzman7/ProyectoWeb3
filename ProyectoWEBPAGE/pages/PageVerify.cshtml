@@ -1,0 +1,71 @@
+﻿@{
+    var db = Database.Open("connectionstring");
+
+    var name = Request.QueryString["name"];
+    var lastname = Request.QueryString["lastname"];
+    var secondLastname = Request.QueryString["secondlastname"];
+    var email = Request.QueryString["email"];
+    var password = Request.QueryString["password"];
+    var role = Request.QueryString["role"];
+
+    var nameDecrypt = Decrypt(name);
+    var lastnameDecrypt = Decrypt(lastname);
+    var secondLastnameDecrypt = Decrypt(secondLastname);
+    var emailDecrypt = Decrypt(email);
+    var passwordDecrypt = Decrypt(password);
+    var roleDecrypt = Decrypt(role);
+
+    string code = Request.QueryString["Code"];
+    string codeForm = Request.Form["txtCode"];
+
+    if (IsPost)
+    {
+
+        if (code == codeForm)
+        {
+            
+            var query = "INSERT INTO [User](name, lastName, secondLastName, email, password, role) VALUES(@0, @1, @2, @3, HASHBYTES('md5', @4), @5)";
+            int res = db.Execute(query, nameDecrypt, lastnameDecrypt, secondLastnameDecrypt, emailDecrypt, passwordDecrypt, roleDecrypt);
+            if (res>0)
+            {
+                Response.Redirect("~/PageLogin");
+            }
+        }
+    }
+
+    string Decrypt(string data)
+    {
+        byte[] decrypt = Convert.FromBase64String(data);
+
+        return System.Text.Encoding.Unicode.GetString(decrypt); ;
+    }
+    
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <meta name="viewport" content="width=device-width" />
+    <title>Verify</title>
+</head>
+<body class="container">
+    <div class=" vh-100 row justify-content-around align-items-center ">
+        <div class="shadow-lg p-3 mb-5 bg-white rounded col-sm-4 ">
+            <h1 class="text-center ">Enter the code</h1>
+            <form data-toggle="validator" role="form" action="" method="post">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="txtCode" required />
+                    <div class="help-block with-errors"></div>
+                </div>
+                <br />
+                <div class="form-row text-center">
+                    <input type="submit" name="send" value="Verify" class="btn btn-success " />
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
