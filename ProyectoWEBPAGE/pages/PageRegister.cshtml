@@ -24,7 +24,7 @@
             if (role == "Estudiante" || role =="Docente")
             {
                 string code = SendEmailCode(email);
-                Response.Redirect("~/PageVerify?Code=" + code + "&name=" + nameEncrypt + "&lastname=" + lastnameEncrypt + "&secondlastname=" + secondLastnameEncrypt + "&email=" + emailEncrypt + "&password=" + passwordEncrypt +"&role=" +roleEncrypt);
+                Response.Redirect("~/pages/PageVerify?Code=" + code + "&name=" + nameEncrypt + "&lastname=" + lastnameEncrypt + "&secondlastname=" + secondLastnameEncrypt + "&email=" + emailEncrypt + "&password=" + passwordEncrypt +"&role=" +roleEncrypt);
             }
             else
             {
