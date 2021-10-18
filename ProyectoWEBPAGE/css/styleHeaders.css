@@ -22,7 +22,7 @@ ul {
         text-decoration: none;
     }
 
-.sesion {
+.session {
     font-size: 20px;
     color: white;
     padding-top: 10px;
@@ -31,12 +31,12 @@ ul {
     padding-right: 5px;
 }
 
-    .sesion:hover {
-        color: white;
-        text-decoration: none;
-        border: ridge;
-        border-width: thin;
-    }
+.sesion:hover {
+    color: white;
+    text-decoration: none;
+    border: ridge;
+    border-width: thin;
+}
 
 .sub {
     font-size: 30px;
@@ -76,7 +76,7 @@ body {
     padding: 15px;
 }
 
-#inicio, #materias, #docentes {
+#init, #matter, #teacher {
     text-align: center;
     padding: 30px;
 }
@@ -106,9 +106,8 @@ body {
     justify-content: center;
 }
 
-@media (max-width:1000px){
+@media (max-width:1000px) {
     #login {
-
         text-align: center;
         padding: 30px;
     }
