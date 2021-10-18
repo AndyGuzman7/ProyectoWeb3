@@ -257,8 +257,8 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
     <link rel="stylesheet" href="~/css/styleBody.css" />
-    <link rel="stylesheet" href="~/css/styleComent.css" />
     <link rel="stylesheet" href="~/css/styleModal.css" />
+    <link rel="stylesheet" href="~/css/styleComment.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <meta charset="utf-8">
@@ -295,9 +295,9 @@
         <div class="container">
             @if (rolUser == "Estudiante")
             {
-                <div class="row comentarios justify-content-center">
+                <div class="row comments justify-content-center">
                     <div class="col-6" style="background-color:#f1f0ef">
-                        <form style="background-color:#f1f0ef; padding:20px;" action="" method="post" class="form_comentarios d-flex justify-content-end flex-wrap ">
+                        <form style="background-color:#f1f0ef; padding:20px;" action="" method="post" class="form_comments d-flex justify-content-end flex-wrap ">
                             <input type="hidden" name="typeAction" value="POST" />
                             <div class="form-group" style=" width:100%;">
                                 <label>
@@ -350,7 +350,7 @@
                                 <img src="~/Images/userImage.png" width="45" height="45" alt="" />
                                 <div class="media-body" style="width:100%">
 
-                                    <p class="nombre">
+                                    <p class="name">
 
                                         @dataItem[2]
                                         <span>
@@ -434,14 +434,14 @@
                                         <hr />
                                     </p>
 
-                                    <p class="comentario ">
+                                    <p class="comment ">
                                         @dataItem[5]
                                     </p>
 
 
                                     @if (rolUser == "Docente")
                                     {
-                                        <div class="botones text-right">
+                                        <div class="buttons text-right">
                                             <a data-toggle="modal" data-target="#myModal" style="cursor:pointer;" onclick="viewDataComent('@dataItem[0]', '@dataItem[1]','@dataItem[2]','@dataItem[3]','@dataItem[4]','@dataItem[5]');">Editar</a>
                                             <a data-toggle="modal" data-target="#myModalDelete" style="cursor:pointer;" onclick="sendDialogDelete('@dataItem[0]','@dataItem[5]')">Borrar</a>
                                         </div>
@@ -472,7 +472,7 @@
                                 <div>
                                     <input type="hidden" name="typeAction" value="DELETE" />
                                 </div>
-                                <div class="form_comentarios form-group">
+                                <div class="form_comments form-group">
                                     <label>Comentario</label>
 
                                     <input id="txtCommentDelete" class="form-control" type="text" readonly>
@@ -504,7 +504,7 @@
                         <div class="modal-body">
 
 
-                            <form action="" method="post" class="form_comentarios">
+                            <form action="" method="post" class="form_comments">
                                 <div class="row">
 
                                     <div class="col form-group">

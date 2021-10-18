@@ -96,13 +96,11 @@
   <ItemGroup>
     <Content Include="css\styleBody.css" />
     <Content Include="css\styleBody2.css" />
-    <Content Include="css\styleHeader.css" />
+    <Content Include="css\styleComment.css" />
+    <Content Include="css\styleHeaders.css" />
     <Content Include="css\styleIndex.css" />
     <Content Include="Images\logo_lema.png" />
     <Content Include="Images\mallaCurricular.png" />
-    <Content Include="css\styleComent.css" />
-    <Content Include="css\styleModal.css" />
-    <Content Include="Images\UnivalleLogo.png" />
     <Content Include="Images\univalle_direccion.png" />
     <Content Include="Images\userImage.png" />
     <Content Include="js\functionality.js" />
