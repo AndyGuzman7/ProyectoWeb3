@@ -1,0 +1,149 @@
+﻿@{
+    var db = Database.Open("connectionstring");
+    var name = Request.Form["txtName"];
+    var lastname = Request.Form["txtLastName"];
+    var secondLastname = Request.Form["txtSecondLastName"];
+    var email = Request.Form["txtEmail"];
+    var password = Request.Form["txtPassword"];
+    var msg = "";
+
+
+    if (IsPost)
+    {
+        try
+        {
+            var role = TypeRole(email);
+
+            var nameEncrypt = Encrypt(name);
+            var lastnameEncrypt = Encrypt(lastname);
+            var secondLastnameEncrypt = Encrypt(secondLastname);
+            var emailEncrypt = Encrypt(email);
+            var passwordEncrypt = Encrypt(password);
+            var roleEncrypt = Encrypt(role);
+
+            if (role == "Estudiante" || role =="Docente")
+            {
+                string code = SendEmailCode(email);
+                Response.Redirect("~/pages/PageVerify?Code=" + code + "&name=" + nameEncrypt + "&lastname=" + lastnameEncrypt + "&secondlastname=" + secondLastnameEncrypt + "&email=" + emailEncrypt + "&password=" + passwordEncrypt +"&role=" +roleEncrypt);
+            }
+            else
+            {
+                msg = "Wrong email format";
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+
+    }
+    string Encrypt(string data)
+    {
+        byte[] encryp = System.Text.Encoding.Unicode.GetBytes(data.ToString());
+        return Convert.ToBase64String(encryp);
+    }
+
+    string TypeRole(string emailVerify)
+    {
+        string type = "";
+        char[] letras = emailVerify.ToCharArray();
+        for (int i = 0; i < emailVerify.Length; i++)
+        {
+            if (letras[i].ToString() == "@")
+            {
+                type = emailVerify.Substring(i);
+                if (type == "@univalle.edu")
+                {
+                    return type = "Docente";
+                }
+                else if (type == "@est.univalle.edu")
+                {
+                    return type = "Estudiante";
+                }
+            }
+        }
+        return type = "norole";
+    }
+
+    string SendEmailCode(string emailVerify)
+    {
+        Random ran = new Random();
+        int ranInt = ran.Next(1000, 9999);
+
+        string To = emailVerify;
+        string mail = "This is code of Verify: " + ranInt.ToString();
+
+        try
+        {
+            WebMail.SmtpServer = "smtp.gmail.com";
+            WebMail.EnableSsl = true;
+            WebMail.SmtpPort = 587;
+            WebMail.UserName = "sure.univalle@gmail.com";
+            WebMail.Password = "Univalle2325";
+            WebMail.From = "sure.univalle@gmail.com";
+            WebMail.Send(to: To, subject: "Code of Verify", body: mail);
+            return ranInt.ToString();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+</head>
+<body class="container">
+    
+    <div class=" vh-100 row justify-content-around align-items-center ">
+        <div class="shadow-lg p-3 mb-5 bg-white rounded col-sm-4 ">
+
+            <img src="~/images/UnivalleLogo.png" class="img-fluid mb-3" />
+            <form data-toggle="validator" action="" method="post">
+                <div class="form-group">
+                    <label for="txtName">Name</label> <br />
+                    <input class="form-control" type="text" name="txtName" required  />
+                </div>
+                <div class="form-group">
+                    <label for="txtLastName">Lastname</label> <br />
+                    <input class="form-control" type="text" name="txtLastName" required  />
+                </div>
+                <div class="form-group">
+                    <label for="txtSecondLastName">Second Lastname</label> <br />
+                    <input class="form-control" type="text" name="txtSecondLastName" required  />
+                </div>
+                <div class="form-group">
+                    <label for="txtEmail">Email Address</label> <br />
+                    <input class="form-control" type="text" name="txtEmail" required />
+                </div>
+                <div class="form-group">
+                    <label for="txtPassword">Password</label>
+                    <input type="password" name="txtPassword" class="form-control" required minlength="5" />
+                </div>
+                <br />
+                <div>
+                    <input type="submit" name="btnSend" value="Send data" class="btn btn-primary w-100" /> <br />
+                    <a style="align-items: flex-end" href="~/pages/PageLogin.cshtml">Back</a> 
+                    
+                </div>
+                <div>
+                    <a style="align-items: flex-end" href="~/pages/index.cshtml">Exit</a>
+                </div>
+                <br />
+                <label>@msg</label>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

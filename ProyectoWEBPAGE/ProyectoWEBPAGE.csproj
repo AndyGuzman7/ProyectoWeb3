@@ -81,6 +81,12 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.3.2.7\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.2.7\lib\net45\WebMatrix.WebData.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -96,6 +102,7 @@
     <Content Include="Images\logo_lema.png" />
     <Content Include="Images\mallaCurricular.png" />
     <Content Include="Images\univalle_direccion.png" />
+    <Content Include="Images\userImage.png" />
     <Content Include="js\functionality.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -109,6 +116,10 @@
     <Content Include="pages\_header.cshtml" />
     <Content Include="pages\_footer.cshtml" />
     <Content Include="pages\index.cshtml" />
+    <Content Include="pages\PageLogin.cshtml" />
+    <Content Include="pages\PageRegister.cshtml" />
+    <Content Include="pages\PageVerify.cshtml" />
+    <Content Include="pages\CloseSession.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

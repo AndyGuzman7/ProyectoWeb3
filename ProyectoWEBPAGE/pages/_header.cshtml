@@ -1,6 +1,7 @@
 ﻿@{
-    Layout = null;
-    var sesion = 0;
+
+
+
 }
 
 <!DOCTYPE html>
@@ -33,16 +34,29 @@
         <div class="col-md-2" id="teacher">
             <a class="option sm-2" href="~/pages/PageTeacher.cshtml">DOCENTES</a>
         </div>
-        @if (sesion != 1)
+        @if (Session["sessionUserID"] != null && Session["sessionUserName"] != null && Session["sessionUserRole"] != null)
         {
-            <div class="col-md-3" id="login">
-                <a href="" class="sesion sm-2">Iniciar&nbsp;Sesión</a>
+            string fullname = Session["sessionUserName"].ToString();
+            var onlyName = fullname.Split(' ');
+
+            <div class="col-md-3 text-center" id="login" >
+                <div class=" form-row text-center" style="width: 100%;">
+                    <div style="width: 100%">
+                        <input type="text" name="txtUsuario" class="user sm-2" disabled="disabled" value="@onlyName[0]" />
+                        <div  style="width: 100%;" >
+                            <a class="user sm-2" href="~/pages/CloseSession.cshtml">Cerrar sesión</a>
+                        </div>
+                    </div>
+                    
+
+                </div>
+
             </div>
         }
         else
         {
             <div class="col-md-3" id="login">
-                <input type="text" name="txtUsuario" class="user sm-2" disabled="disabled" value="Nicolas Soria" />
+                <a href="~/pages/PageLogin.cshtml" class="sesion sm-2">Iniciar&nbsp;Sesión</a>
             </div>
         }
     </div>

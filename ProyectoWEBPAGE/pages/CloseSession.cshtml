@@ -1,0 +1,30 @@
+﻿@{
+    
+    if (Session["sessionUserID"] != null && Session["sessionUserName"] != null && Session["sessionUserRole"] != null)
+    {
+        /*Session["sessionUserID"] = null;
+        Session["sessionUserName"] = null;
+        Session["sessionUserRole"] = null;
+        Session.RemoveAt(0);
+        Session.RemoveAt(1);
+        Session.RemoveAt(2);*/
+        Session.Contents.RemoveAll();
+        Response.Redirect("~/pages/index");
+
+    }
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+    
+    </div>
+</body>
+</html>
